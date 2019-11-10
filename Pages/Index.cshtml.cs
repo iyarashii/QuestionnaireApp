@@ -11,6 +11,8 @@ namespace QuestionnaireApp.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        public bool IsAdmin =>
+    HttpContext.User.HasClaim("IsAdmin", bool.TrueString);
 
         public IndexModel(ILogger<IndexModel> logger)
         {
@@ -19,7 +21,6 @@ namespace QuestionnaireApp.Pages
 
         public void OnGet()
         {
-
         }
     }
 }
