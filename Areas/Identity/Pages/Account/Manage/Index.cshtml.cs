@@ -44,6 +44,7 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Last name")]
             public string LastName { get; set; }
 
+            [Required]
             public Genders Gender { get; set; }
 
             [Phone]

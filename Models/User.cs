@@ -11,20 +11,25 @@ namespace QuestionnaireApp.Models
     {
         // these properties are included in IdentityUser class
         //public override string UserName { get; set; }
-        //public string Password { get; set; }
         //public override string Email { get; set; }
-        //public override string PhoneNumber { get; set; }
+
+        // override just to add display attribute
+        [Display(Name = "Phone Number")]
+        public override string PhoneNumber { get; set; }
 
         [Required]
         [MaxLength(100)]
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
         [Required]
         [MaxLength(100)]
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
+        [Required]
         public Genders Gender { get; set; }
 
         // TODO: sprawdzic czy ma sens  
         // lista ID grup do ktorych nalezy user 
-        public IList<Group> Groups { get; set; }
+        public IList<UserGroup> UserGroups { get; set; }
     }
 }

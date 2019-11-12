@@ -4,11 +4,13 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using QuestionnaireApp.Data;
+using QuestionnaireApp.Models;
 
 namespace QuestionnaireApp
 {
@@ -26,7 +28,8 @@ namespace QuestionnaireApp
                 try
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
-                    DbInitializer.Initialize(context);
+                    var userManager = services.GetRequiredService<UserManager<User>>();
+                    DbInitializer.Initialize(context, userManager);
                 }
                 catch (Exception ex)
                 {

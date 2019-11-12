@@ -9,5 +9,6 @@ namespace QuestionnaireApp.Models
     {
         public int ID { get; set; }
         public string Name { get; set; }
+        public IList<UserGroup> UserGroups { get; set; }
     }
 }

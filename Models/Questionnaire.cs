@@ -16,8 +16,8 @@ namespace QuestionnaireApp.Models
         public DateTime DueDate { get; set; }
 
         // TODO: ankieta ogolna gdy targets bedzie puste?
-        public List<User> Targets { get; set; }
+        public IList<User> Targets { get; set; }
 
-        public List<Question> Questions { get; set; }
+        public IList<Question> Questions { get; set; }
     }
 }

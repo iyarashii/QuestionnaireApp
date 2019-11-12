@@ -28,9 +28,6 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
-        // TODO: not sure if works
-        //ApplicationDbContext context;
-        
         public RegisterModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
@@ -71,6 +68,7 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
+            [Required]
             public Genders Gender { get; set; }
 
             [Required]
@@ -110,7 +108,7 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    // TODO: nadanie uzytkownikowi praw admina jezeli jest jedynym uzytkownikiem podczas tworzenia
+                    // TODO: nadanie uzytkownikowi praw admina jezeli jego mail to admin@admin.com
                     await _userManager.AddClaimAsync(user,
                          new Claim("IsAdmin",
                              (user.Email == "admin@admin.com").ToString()));
