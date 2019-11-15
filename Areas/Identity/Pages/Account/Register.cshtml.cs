@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QuestionnaireApp.Data;
 using QuestionnaireApp.Models;
@@ -27,17 +28,20 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account
         private readonly UserManager<User> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _context;
 
         public RegisterModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         [BindProperty]
@@ -108,7 +112,45 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    // TODO: nadanie uzytkownikowi praw admina jezeli jego mail to admin@admin.com
+                    if (user.Email != "admin@admin.com")
+                    {
+                        int groupToUpdateID = 0;
+                        // check registered user gender and add users id to the correct gender-based group
+                        //UserGroup userGroup = null;
+                        switch (user.Gender)
+                        {
+                            case Genders.Female:
+                                int femalesGroupID = _context.Groups.Where(g => g.Name == "Females").FirstOrDefault().ID;
+                                //var femalesGroup = _context.Groups.Where(g => g.Name == "Females").FirstOrDefault();
+                                //userGroup = new UserGroup { GroupID = femalesGroupID, UserID = user.Id };
+                                groupToUpdateID = femalesGroupID;
+                                break;
+                            case Genders.Male:
+                                int malesGroupID = _context.Groups.Where(g => g.Name == "Males").FirstOrDefault().ID;
+                                //userGroup = new UserGroup { GroupID = malesGroupID, UserID = user.Id };
+                                groupToUpdateID = malesGroupID;
+                                break;
+                            case Genders.Other:
+                                int othersGroupID = _context.Groups.Where(g => g.Name == "Others").FirstOrDefault().ID;
+                                //userGroup = new UserGroup { GroupID = othersGroupID, UserID = user.Id };
+                                groupToUpdateID = othersGroupID;
+                                break;
+                        }
+                        var groupToUpdate = await _context.Groups.Include(g => g.UserGroups).FirstOrDefaultAsync(g => g.ID == groupToUpdateID);
+                        groupToUpdate.UserGroups.Add(
+                            new UserGroup
+                            {
+                                GroupID = groupToUpdateID,
+                                UserID = user.Id
+                            });
+                        //if (userGroup != null)
+                        //{
+                            //_context.UserGroups.Add(userGroup);
+                            await _context.SaveChangesAsync();
+                        //} 
+                    }
+
+                    // TODO: grant user admin rights if his mail is - admin@admin.com
                     await _userManager.AddClaimAsync(user,
                          new Claim("IsAdmin",
                              (user.Email == "admin@admin.com").ToString()));

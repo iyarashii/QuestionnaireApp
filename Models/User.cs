@@ -28,8 +28,7 @@ namespace QuestionnaireApp.Models
         [Required]
         public Genders Gender { get; set; }
 
-        // TODO: sprawdzic czy ma sens  
-        // lista ID grup do ktorych nalezy user 
+        // list of the groups that this user is a part of
         public IList<UserGroup> UserGroups { get; set; }
     }
 }

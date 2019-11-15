@@ -75,6 +75,11 @@ namespace QuestionnaireApp.Pages.Users
                                         //new Claim("IsAdmin", bool.TrueString));
                     await _context.SaveChangesAsync();
                 }
+                else
+                {
+                    await _userManager.ReplaceClaimAsync(user, new Claim("IsAdmin", bool.FalseString), IsAdminClaim);
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToPage("./Index");
             }
             catch (DbUpdateException /* ex */)

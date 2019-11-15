@@ -55,6 +55,11 @@ namespace QuestionnaireApp
             services.AddMvc()
                     .AddRazorPagesOptions(options =>
                         options.Conventions.AuthorizeFolder("/Users/", "Admin"));
+
+            // authorize groups folder
+            services.AddMvc()
+                    .AddRazorPagesOptions(options =>
+                        options.Conventions.AuthorizeFolder("/Groups/", "Admin"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
