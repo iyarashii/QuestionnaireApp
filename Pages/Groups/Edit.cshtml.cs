@@ -11,7 +11,7 @@ using QuestionnaireApp.Models;
 
 namespace QuestionnaireApp.Pages.Groups
 {
-    public class EditModel : PageModel
+    public class EditModel : GroupsPageModel
     {
         private readonly QuestionnaireApp.Data.ApplicationDbContext _context;
 
@@ -30,48 +30,49 @@ namespace QuestionnaireApp.Pages.Groups
                 return NotFound();
             }
 
-            Group = await _context.Groups.FirstOrDefaultAsync(m => m.ID == id);
+            Group = await _context.Groups
+                .Include(g => g.UserGroups)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
 
             if (Group == null)
             {
                 return NotFound();
             }
+
+            PopulateAssignedUserData(_context, Group);
+
             return Page();
         }
 
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id, string[] selectedUsers)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            _context.Attach(Group).State = EntityState.Modified;
+            var groupToUpdate = await _context.Groups
+                .Include(g => g.UserGroups)
+                .FirstOrDefaultAsync(g => g.ID == id);
 
-            try
+            if (groupToUpdate == null)
             {
+                return NotFound();
+            }
+
+            if (await TryUpdateModelAsync<Group>(
+                groupToUpdate,
+                "Group",
+                i => i.Name))
+            {
+                UpdateGroupUsers(_context, selectedUsers, groupToUpdate);
                 await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GroupExists(Group.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return RedirectToPage("./Index");
-        }
-
-        private bool GroupExists(int id)
-        {
-            return _context.Groups.Any(e => e.ID == id);
+            UpdateGroupUsers(_context, selectedUsers, groupToUpdate);
+            PopulateAssignedUserData(_context, groupToUpdate);
+            return Page();
         }
     }
 }

@@ -23,8 +23,6 @@ namespace QuestionnaireApp.Pages.Groups
 
         public async Task OnGetAsync()
         {
-            //Users = await _context.Users.ToListAsync();
-
             var group = new Group();
             group.UserGroups = new List<UserGroup>();
             PopulateAssignedUserData(_context, group);

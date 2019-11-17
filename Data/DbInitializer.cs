@@ -51,31 +51,26 @@ namespace QuestionnaireApp.Data
                 context.SaveChanges(); 
             }
 
-
+            // Look for any groups.
             if (!context.Groups.Any())
             {
-                List<string> adminIds = new List<string>();
+                // get all existing users form db context
+                var allExistingUsers = context.Users;
 
-                var claims = context.UserClaims;
-                foreach (var claim in claims)
-                {
-                    adminIds.Add(claim.UserId);
-                }
-
-                var allUsersExceptAdmins = context.Users.Where(u => !adminIds.Contains(u.Id));
-
+                // create gender-based groups
                 var groups = new Group[]
                 {
                     new Group {Name = "Females"},
                     new Group {Name = "Males"},
                     new Group {Name = "Others"}
                 };
+
+                // query db for the users of each gender and then add them to the correct groups
                 foreach (var group in groups)
                 {
                     group.UserGroups = new List<UserGroup>();
                 }
-                IQueryable<string> femaleQuery = from u in allUsersExceptAdmins where u.Gender.Equals(Genders.Female) select u.Id;
-                //List<string> femaleIDs = context.Users.Where(u => u.Gender == Genders.Female).ToList();
+                IQueryable<string> femaleQuery = from u in allExistingUsers where u.Gender.Equals(Genders.Female) select u.Id;
                 List<string> femaleIDs = femaleQuery.ToList();
                 foreach (string id in femaleIDs)
                 {
@@ -86,8 +81,7 @@ namespace QuestionnaireApp.Data
                     groups[0].UserGroups.Add(userToAdd);
                 }
 
-                IQueryable<string> maleQuery = from u in allUsersExceptAdmins where u.Gender.Equals(Genders.Male) select u.Id;
-                //List<string> femaleIDs = context.Users.Where(u => u.Gender == Genders.Female).ToList();
+                IQueryable<string> maleQuery = from u in allExistingUsers where u.Gender.Equals(Genders.Male) select u.Id;
                 List<string> maleIDs = maleQuery.ToList();
                 foreach (string id in maleIDs)
                 {
@@ -98,8 +92,7 @@ namespace QuestionnaireApp.Data
                     groups[1].UserGroups.Add(userToAdd);
                 }
 
-                IQueryable<string> otherQuery = from u in allUsersExceptAdmins where u.Gender.Equals(Genders.Other) select u.Id;
-                //List<string> femaleIDs = context.Users.Where(u => u.Gender == Genders.Female).ToList();
+                IQueryable<string> otherQuery = from u in allExistingUsers where u.Gender.Equals(Genders.Other) select u.Id;
                 List<string> otherIDs = otherQuery.ToList();
                 foreach (string id in otherIDs)
                 {
@@ -110,11 +103,13 @@ namespace QuestionnaireApp.Data
                     groups[2].UserGroups.Add(userToAdd);
                 }
 
+                // add groups to the db context
                 foreach (var group in groups)
                 {
                     context.Groups.Add(group);
-                    context.SaveChanges();
                 }
+                // update db
+                context.SaveChanges();
             }
         }
     }

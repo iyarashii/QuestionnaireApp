@@ -32,8 +32,6 @@ namespace QuestionnaireApp.Pages.Groups
         [BindProperty]
         public Group Group { get; set; }
 
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync(string[] selectedUsers)
         {
             var newGroup = new Group();
@@ -62,15 +60,6 @@ namespace QuestionnaireApp.Pages.Groups
 
             PopulateAssignedUserData(_context, newGroup);
             return Page();
-            //if (!ModelState.IsValid)
-            //{
-            //    return Page();
-            //}
-
-            //_context.Groups.Add(Group);
-            //await _context.SaveChangesAsync();
-
-            //return RedirectToPage("./Index");
         }
     }
 }

@@ -112,43 +112,31 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    if (user.Email != "admin@admin.com")
+                    // check registered user gender and add users id to the correct gender-based group
+                    int groupToUpdateID = 0;
+                    switch (user.Gender)
                     {
-                        int groupToUpdateID = 0;
-                        // check registered user gender and add users id to the correct gender-based group
-                        //UserGroup userGroup = null;
-                        switch (user.Gender)
-                        {
-                            case Genders.Female:
-                                int femalesGroupID = _context.Groups.Where(g => g.Name == "Females").FirstOrDefault().ID;
-                                //var femalesGroup = _context.Groups.Where(g => g.Name == "Females").FirstOrDefault();
-                                //userGroup = new UserGroup { GroupID = femalesGroupID, UserID = user.Id };
-                                groupToUpdateID = femalesGroupID;
-                                break;
-                            case Genders.Male:
-                                int malesGroupID = _context.Groups.Where(g => g.Name == "Males").FirstOrDefault().ID;
-                                //userGroup = new UserGroup { GroupID = malesGroupID, UserID = user.Id };
-                                groupToUpdateID = malesGroupID;
-                                break;
-                            case Genders.Other:
-                                int othersGroupID = _context.Groups.Where(g => g.Name == "Others").FirstOrDefault().ID;
-                                //userGroup = new UserGroup { GroupID = othersGroupID, UserID = user.Id };
-                                groupToUpdateID = othersGroupID;
-                                break;
-                        }
-                        var groupToUpdate = await _context.Groups.Include(g => g.UserGroups).FirstOrDefaultAsync(g => g.ID == groupToUpdateID);
-                        groupToUpdate.UserGroups.Add(
-                            new UserGroup
-                            {
-                                GroupID = groupToUpdateID,
-                                UserID = user.Id
-                            });
-                        //if (userGroup != null)
-                        //{
-                            //_context.UserGroups.Add(userGroup);
-                            await _context.SaveChangesAsync();
-                        //} 
+                        case Genders.Female:
+                            int femalesGroupID = _context.Groups.Where(g => g.Name == "Females").FirstOrDefault().ID;
+                            groupToUpdateID = femalesGroupID;
+                            break;
+                        case Genders.Male:
+                            int malesGroupID = _context.Groups.Where(g => g.Name == "Males").FirstOrDefault().ID;
+                            groupToUpdateID = malesGroupID;
+                            break;
+                        case Genders.Other:
+                            int othersGroupID = _context.Groups.Where(g => g.Name == "Others").FirstOrDefault().ID;
+                            groupToUpdateID = othersGroupID;
+                            break;
                     }
+                    var groupToUpdate = await _context.Groups.Include(g => g.UserGroups).FirstOrDefaultAsync(g => g.ID == groupToUpdateID);
+                    groupToUpdate.UserGroups.Add(
+                        new UserGroup
+                        {
+                            GroupID = groupToUpdateID,
+                            UserID = user.Id
+                        });
+                    await _context.SaveChangesAsync();
 
                     // TODO: grant user admin rights if his mail is - admin@admin.com
                     await _userManager.AddClaimAsync(user,

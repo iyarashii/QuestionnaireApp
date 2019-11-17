@@ -20,9 +20,35 @@
                 <span asp-validation-for="Group.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="table">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+
+                                foreach (var user in Model.AssignedUserDataList)
+                                {
+                                    if (cnt++ % 6 == 0)
+                                    {
+                                    @:</tr><tr>
+                                    }
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="selectedUsers"
+                                               value="@user.UserID"
+                                               @(Html.Raw(user.Assigned ? "checked=\"checked\"" : "")) />
+                                        @user.FirstName @:  @user.LastName @user.Email
+                                    @:</td>
+                                }
+                            @:</tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
     </div>
 </div>
 

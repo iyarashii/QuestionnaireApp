@@ -21,6 +21,9 @@
                 <br />
                 Last Name | First Name | Email
             </th>
+            <th>
+                Member Count
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -34,13 +37,18 @@
                 @{
                     foreach (var user in item.UserGroups)
                     {
-                        var userData = Model.AssignedUserDataList.Where(u => u.UserID == user.UserID).FirstOrDefault();
+                        var userData = Model.AssignedUserDataList
+                            .Where(u => u.UserID == user.UserID)
+                            .FirstOrDefault();
                         if (userData != null)
                         {
                             @: @userData.LastName | @userData.FirstName | @userData.Email <br />
                         }
                     }
                 }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserGroups.Count)
             </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |

@@ -17,7 +17,7 @@ namespace QuestionnaireApp.Pages.Users
         private readonly UserManager<User> _userManager;
 
 
-        public GrantAdminRightsModel(QuestionnaireApp.Data.ApplicationDbContext context, UserManager<User> userManager)
+        public GrantAdminRightsModel(Data.ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -33,8 +33,6 @@ namespace QuestionnaireApp.Pages.Users
             }
 
             SelectedUser = await _context.Users
-                //.Include(s => s.Enrollments)
-                //.ThenInclude(e => e.Course)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -59,25 +57,25 @@ namespace QuestionnaireApp.Pages.Users
                 return NotFound();
             }
 
-            Claim IsAdminClaim = new Claim("IsAdmin", bool.TrueString);
-
             try
             {
                 //var claims = await _userManager.GetClaimsAsync(user);
 
                 // get all users with admin permissions
-                var currentAdmins = await _userManager.GetUsersForClaimAsync(IsAdminClaim);
+                var currentAdmins = await _userManager.GetUsersForClaimAsync(Constants.IsAdminClaim);
+                // get all registered users with IsAdmin claim set to False 
+                var registeredUsers = await _userManager.GetUsersForClaimAsync(Constants.IsNotAdminClaim);
+                // remove IsAdmin - False claims from every created user
+                foreach(var u in registeredUsers)
+                {
+                    await _userManager.RemoveClaimAsync(u, Constants.IsNotAdminClaim);
+                }
+                await _context.SaveChangesAsync();
 
                 // check if selected user has admin permissions if not grant him permissions
                 if (!currentAdmins.Contains(user))
                 {
-                    await _userManager.AddClaimAsync(user, IsAdminClaim);
-                                        //new Claim("IsAdmin", bool.TrueString));
-                    await _context.SaveChangesAsync();
-                }
-                else
-                {
-                    await _userManager.ReplaceClaimAsync(user, new Claim("IsAdmin", bool.FalseString), IsAdminClaim);
+                    await _userManager.AddClaimAsync(user, Constants.IsAdminClaim);
                     await _context.SaveChangesAsync();
                 }
                 return RedirectToPage("./Index");

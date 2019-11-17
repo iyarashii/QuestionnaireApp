@@ -10,7 +10,7 @@ using QuestionnaireApp.Models;
 
 namespace QuestionnaireApp.Pages.Groups
 {
-    public class DetailsModel : PageModel
+    public class DetailsModel : GroupsPageModel
     {
         private readonly QuestionnaireApp.Data.ApplicationDbContext _context;
 
@@ -27,13 +27,22 @@ namespace QuestionnaireApp.Pages.Groups
             {
                 return NotFound();
             }
+            var group = new Group
+            {
+                UserGroups = new List<UserGroup>()
+            };
 
-            Group = await _context.Groups.FirstOrDefaultAsync(m => m.ID == id);
+            PopulateAssignedUserData(_context, group);
+
+            Group = await _context.Groups
+                .Include(g => g.UserGroups)
+                .FirstOrDefaultAsync(g => g.ID == id);
 
             if (Group == null)
             {
                 return NotFound();
             }
+
             return Page();
         }
     }

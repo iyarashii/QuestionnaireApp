@@ -12,7 +12,6 @@ namespace QuestionnaireApp.Pages.Groups
     public class GroupsPageModel : PageModel
     {
         public List<AssignedUserData> AssignedUserDataList;
-        public List<User> Users { get; set; }
 
         public void PopulateAssignedUserData(ApplicationDbContext context,
                                                Group group)
@@ -25,8 +24,7 @@ namespace QuestionnaireApp.Pages.Groups
                 adminIds.Add(claim.UserId);
             }
 
-            var allUsers = context.Users.Where(u => !adminIds.Contains(u.Id));
-            //var allUsers = context.Users;
+            var allUsers = context.Users;
             var groupUsers = new HashSet<string>(
                 group.UserGroups.Select(u => u.UserID));
             AssignedUserDataList = new List<AssignedUserData>();
@@ -42,5 +40,46 @@ namespace QuestionnaireApp.Pages.Groups
                 });
             }
         }
+
+        public void UpdateGroupUsers(ApplicationDbContext context,
+            string[] selectedUsers, Group groupToUpdate)
+        {
+            if (selectedUsers == null)
+            {
+                groupToUpdate.UserGroups = new List<UserGroup>();
+                return;
+            }
+
+            var selectedUsersHS = new HashSet<string>(selectedUsers);
+            var groupUsers = new HashSet<string>
+                (groupToUpdate.UserGroups.Select(u => u.UserID));
+            foreach (var user in context.Users)
+            {
+                if (selectedUsersHS.Contains(user.Id))
+                {
+                    if (!groupUsers.Contains(user.Id))
+                    {
+                        groupToUpdate.UserGroups.Add(
+                            new UserGroup
+                            {
+                                GroupID = groupToUpdate.ID,
+                                UserID = user.Id
+                            });
+                    }
+                }
+                else
+                {
+                    if (groupUsers.Contains(user.Id))
+                    {
+                        UserGroup userToRemove
+                            = groupToUpdate
+                                .UserGroups
+                                .SingleOrDefault(i => i.UserID == user.Id);
+                        context.Remove(userToRemove);
+                    }
+                }
+            }
+        }
+
     }
 }
