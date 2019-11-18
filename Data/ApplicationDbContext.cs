@@ -16,6 +16,10 @@ namespace QuestionnaireApp.Data
         }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
+        public DbSet<Questionnaire> Questionnaires { get; set; }
+        public DbSet<QuestionnaireGroup> QuestionnaireGroups { get; set; }
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<Answer> Answers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +31,9 @@ namespace QuestionnaireApp.Data
 
             modelBuilder.Entity<UserGroup>()
                 .HasKey(u => new { u.UserID, u.GroupID });
+
+            modelBuilder.Entity<QuestionnaireGroup>()
+                .HasKey(q => new { q.QuestionnaireID, q.GroupID });
         }
     }
 }

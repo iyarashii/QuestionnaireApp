@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,17 +14,15 @@ namespace QuestionnaireApp.Models
         Other
     };
 
-    public enum Roles
-    {
-        Administrator
-    };
-
     // TODO: wzorowane na google forms https://imgur.com/a/ship2mF
-    public enum AnswerTypes
+    public enum QuestionTypes
     {
-        WrittenAnswer,
+        //WrittenAnswer,
+        [Display(Name = "Multiple choice")]
         MultipleChoice,
-        Checkboxes,
+        [Display(Name = "Single choice")]
+        SingleChoice,
+        [Display(Name = "Drop-down")]
         Dropdown
     };
 }

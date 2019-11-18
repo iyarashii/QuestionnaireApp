@@ -16,13 +16,13 @@ namespace QuestionnaireApp.Pages.Groups
         public void PopulateAssignedUserData(ApplicationDbContext context,
                                                Group group)
         {
-            List<string> adminIds = new List<string>();
+            //List<string> adminIds = new List<string>();
 
-            var claims = context.UserClaims.Where(c => c.ClaimValue == bool.TrueString);
-            foreach (var claim in claims)
-            {
-                adminIds.Add(claim.UserId);
-            }
+            //var claims = context.UserClaims.Where(c => c.ClaimValue == bool.TrueString);
+            //foreach (var claim in claims)
+            //{
+            //    adminIds.Add(claim.UserId);
+            //}
 
             var allUsers = context.Users;
             var groupUsers = new HashSet<string>(

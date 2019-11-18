@@ -12,7 +12,11 @@ namespace QuestionnaireApp.Models
         // TODO: add something to validate that name is unique
         [Required]
         public string Name { get; set; }
+
         [Display(Name = "Members")]
         public IList<UserGroup> UserGroups { get; set; }
+
+        // list of available questionnaires for the particular group
+        public IList<QuestionnaireGroup> GroupQuestionnaires { get; set; }
     }
 }
