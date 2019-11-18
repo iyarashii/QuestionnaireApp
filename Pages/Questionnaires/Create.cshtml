@@ -28,62 +28,89 @@
                 <input asp-for="Questionnaire.DueDate" class="form-control" />
                 <span asp-validation-for="Questionnaire.DueDate" class="text-danger"></span>
             </div>
+            <h4>Select targeted groups for this questionnaire:</h4>
             <div class="form-group">
-                <label asp-for="Questionnaire.Questions[0].Content" class="control-label"></label> 1
-                <input asp-for="Questionnaire.Questions[0].Content" class="form-control" />
-                <span asp-validation-for="Questionnaire.Questions[0].Content" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Questionnaire.Questions[0].QuestionType" class="control-label"></label>
-                <select asp-for="Questionnaire.Questions[0].QuestionType" class="form-control"
-                        asp-items="@Html.GetEnumSelectList<QuestionTypes>()"></select>
-                <span asp-validation-for="Questionnaire.Questions[0].QuestionType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Questionnaire.Questions[0].Answers[0].Content" class="control-label"></label> 1
-                <input asp-for="Questionnaire.Questions[0].Answers[0].Content" class="form-control" />
-                <span asp-validation-for="Questionnaire.Questions[0].Answers[0].Content" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Questionnaire.Questions[0].Answers[1].Content" class="control-label"></label> 2
-                <input asp-for="Questionnaire.Questions[0].Answers[1].Content" class="form-control" />
-                <span asp-validation-for="Questionnaire.Questions[0].Answers[1].Content" class="text-danger"></span>
-            </div>
-            @{
-                int j = 2;
-                while (QuestionnairesPageModel.NumberOfQuestions[0] > j)
+                <div class="table">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+
+                                foreach (var group in Model.QuestionnaireAssignedGroupsDataList)
+                                {
+                                    if (cnt++ % 6 == 0)
+                                    {
+                                    @:</tr><tr>
+                                    }
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="selectedGroups"
+                                               value="@group.GroupID"
+                                               @(Html.Raw(group.Assigned ? "checked=\"checked\"" : "")) />
+                                        @group.Name
+                                    @:</td>
+                                }
+                            @:</tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Questionnaire.Questions[0].Content" class="control-label"></label> 1
+                    <input asp-for="Questionnaire.Questions[0].Content" class="form-control" />
+                    <span asp-validation-for="Questionnaire.Questions[0].Content" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Questionnaire.Questions[0].QuestionType" class="control-label"></label>
+                    <select asp-for="Questionnaire.Questions[0].QuestionType" class="form-control"
+                            asp-items="@Html.GetEnumSelectList<QuestionTypes>()"></select>
+                    <span asp-validation-for="Questionnaire.Questions[0].QuestionType" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Questionnaire.Questions[0].Answers[0].Content" class="control-label"></label> 1
+                    <input asp-for="Questionnaire.Questions[0].Answers[0].Content" class="form-control" />
+                    <span asp-validation-for="Questionnaire.Questions[0].Answers[0].Content" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Questionnaire.Questions[0].Answers[1].Content" class="control-label"></label> 2
+                    <input asp-for="Questionnaire.Questions[0].Answers[1].Content" class="form-control" />
+                    <span asp-validation-for="Questionnaire.Questions[0].Answers[1].Content" class="text-danger"></span>
+                </div>
+                @{
+                    int j = 2;
+                    while (QuestionnairesPageModel.NumberOfQuestions[0] > j)
+                    {
+                        <div class="form-group">
+                            <label asp-for="Questionnaire.Questions[0].Answers[j].Content" class="control-label"></label> @(j + 1)
+                            <input asp-for="Questionnaire.Questions[0].Answers[j].Content" class="form-control" />
+                            <span asp-validation-for="Questionnaire.Questions[0].Answers[j].Content" class="text-danger"></span>
+                        </div>
+                        j++;
+                    }
+                }
+                <a asp-page="./Create" asp-route-answers="0">Add answer</a>
+                @{
+                    int i = 2;
+                    int x = 2;
+                }
+                @while (i <= QuestionnairesPageModel.NumberOfQuestions.Count)
                 {
                     <div class="form-group">
-                        <label asp-for="Questionnaire.Questions[0].Answers[j].Content" class="control-label"></label> @(j + 1)
-                        <input asp-for="Questionnaire.Questions[0].Answers[j].Content" class="form-control" />
-                        <span asp-validation-for="Questionnaire.Questions[0].Answers[j].Content" class="text-danger"></span>
+                        <label asp-for="Questionnaire.Questions[i].Content" class="control-label"></label> @i
+                        <input asp-for="Questionnaire.Questions[i].Content" class="form-control" />
+                        <span asp-validation-for="Questionnaire.Questions[i].Content" class="text-danger"></span>
+                        <label asp-for="Questionnaire.Questions[i].QuestionType" class="control-label"></label>
+                        <select asp-for="Questionnaire.Questions[i].QuestionType" class="form-control"
+                                asp-items="@Html.GetEnumSelectList<QuestionTypes>()"></select>
+                        <span asp-validation-for="Questionnaire.Questions[i].QuestionType" class="text-danger"></span>
+                        <label asp-for="Questionnaire.Questions[i].Answers[i].Content" class="control-label"></label> 1
+                        <input asp-for="Questionnaire.Questions[i].Answers[i].Content" class="form-control" />
+                        <span asp-validation-for="Questionnaire.Questions[i].Answers[i].Content" class="text-danger"></span>
+                        <label asp-for="Questionnaire.Questions[i].Answers[i + 1].Content" class="control-label"></label> 2
+                        <input asp-for="Questionnaire.Questions[i].Answers[i + 1].Content" class="form-control" />
+                        <span asp-validation-for="Questionnaire.Questions[i].Answers[i + 1].Content" class="text-danger"></span>
                     </div>
-                    j++;
-                }
-            }
-            <a asp-page="./Create" asp-route-answers="0">Add answer</a>
-            @{ 
-                int i = 2; 
-                int x = 2;
-            }
-            @while (i <= QuestionnairesPageModel.NumberOfQuestions.Count)
-            {
-                <div class="form-group">
-                    <label asp-for="Questionnaire.Questions[i].Content" class="control-label"></label> @i
-                    <input asp-for="Questionnaire.Questions[i].Content" class="form-control" />
-                    <span asp-validation-for="Questionnaire.Questions[i].Content" class="text-danger"></span>
-                    <label asp-for="Questionnaire.Questions[i].QuestionType" class="control-label"></label>
-                    <select asp-for="Questionnaire.Questions[i].QuestionType" class="form-control"
-                            asp-items="@Html.GetEnumSelectList<QuestionTypes>()"></select>
-                    <span asp-validation-for="Questionnaire.Questions[i].QuestionType" class="text-danger"></span>
-                    <label asp-for="Questionnaire.Questions[i].Answers[i].Content" class="control-label"></label> 1
-                    <input asp-for="Questionnaire.Questions[i].Answers[i].Content" class="form-control" />
-                    <span asp-validation-for="Questionnaire.Questions[i].Answers[i].Content" class="text-danger"></span>
-                    <label asp-for="Questionnaire.Questions[i].Answers[i + 1].Content" class="control-label"></label> 2
-                    <input asp-for="Questionnaire.Questions[i].Answers[i + 1].Content" class="form-control" />
-                    <span asp-validation-for="Questionnaire.Questions[i].Answers[i + 1].Content" class="text-danger"></span>
-                </div>
-                @*while (QuestionnairesPageModel.NumberOfQuestions[i - 2] > j)
+                    @*while (QuestionnairesPageModel.NumberOfQuestions[i - 2] > j)
                 {
                     <div class="form-group">
                         <label asp-for="Questionnaire.Questions[i].Answers[x].Content" class="control-label"></label> @(x + 1)
@@ -92,28 +119,28 @@
                     </div>
                     j++;
                 }*@
-                <a asp-page="./Create" asp-route-answers="@(i - 1)">Add answer</a>
-                ++i;
-            }
-            @*@{
-            int x = 2;
-            while (QuestionnairesPageModel.NumberOfQuestions[i - 2] > j)
-            {
+                    <a asp-page="./Create" asp-route-answers="@(i - 1)">Add answer</a>
+                    ++i;
+                }
+                @*@{
+                int x = 2;
+                while (QuestionnairesPageModel.NumberOfQuestions[i - 2] > j)
+                {
+                    <div class="form-group">
+                        <label asp-for="Questionnaire.Questions[i].Answers[x].Content" class="control-label"></label> @(x + 1)
+                        <input asp-for="Questionnaire.Questions[i].Answers[x].Content" class="form-control" />
+                        <span asp-validation-for="Questionnaire.Questions[i].Answers[x].Content" class="text-danger"></span>
+                    </div>
+                    j++;
+                }
+            }*@
                 <div class="form-group">
-                    <label asp-for="Questionnaire.Questions[i].Answers[x].Content" class="control-label"></label> @(x + 1)
-                    <input asp-for="Questionnaire.Questions[i].Answers[x].Content" class="form-control" />
-                    <span asp-validation-for="Questionnaire.Questions[i].Answers[x].Content" class="text-danger"></span>
+                    <a asp-page="./Create" asp-route-questions="@QuestionnairesPageModel.NumberOfQuestions.Count">Add question</a>
                 </div>
-                j++;
-            }
-        }*@
-            <div class="form-group">
-                <a asp-page="./Create" asp-route-questions="@QuestionnairesPageModel.NumberOfQuestions.Count">Add question</a>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
     </div>
 </div>
 

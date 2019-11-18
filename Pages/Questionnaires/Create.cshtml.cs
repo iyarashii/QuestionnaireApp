@@ -21,6 +21,9 @@ namespace QuestionnaireApp.Pages.Questionnaires
 
         public IActionResult OnGet(int? questions, int? answers)
         {
+            var questionnaire = new Questionnaire();
+            questionnaire.Targets = new List<QuestionnaireGroup>();
+
             if (questions != null && questions == NumberOfQuestions.Count)
             {
                 AddQuestion();
@@ -29,6 +32,9 @@ namespace QuestionnaireApp.Pages.Questionnaires
             {
                 AddAnswer(answers ?? 0);
             }
+
+            PopulateAssignedQuestionnaireGroupData(_context, questionnaire);
+
             return Page();
         }
 
@@ -38,21 +44,21 @@ namespace QuestionnaireApp.Pages.Questionnaires
 
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string[] selectedGroups)
         {
             var newQuestionnaire = new Questionnaire();
-            //if (selectedUsers != null)
-            //{
-            //    newGroup.UserGroups = new List<UserGroup>();
-            //    foreach (var user in selectedUsers)
-            //    {
-            //        var userToAdd = new UserGroup
-            //        {
-            //            UserID = user
-            //        };
-            //        newGroup.UserGroups.Add(userToAdd);
-            //    }
-            //}
+            if (selectedGroups != null)
+            {
+                newQuestionnaire.Targets = new List<QuestionnaireGroup>();
+                foreach (var group in selectedGroups)
+                {
+                    var groupToAdd = new QuestionnaireGroup
+                    {
+                        GroupID = int.Parse(group)
+                    };
+                    newQuestionnaire.Targets.Add(groupToAdd);
+                }
+            }
 
             if (await TryUpdateModelAsync<Questionnaire>(
                 newQuestionnaire,
@@ -65,19 +71,9 @@ namespace QuestionnaireApp.Pages.Questionnaires
                 return RedirectToPage("./Index");
             }
 
-            //PopulateAssignedUserData(_context, newGroup);
+            PopulateAssignedQuestionnaireGroupData(_context, newQuestionnaire);
+
             return Page();
-
-
-            //if (!ModelState.IsValid)
-            //{
-            //    return Page();
-            //}
-
-            //_context.Questionnaires.Add(Questionnaire);
-            //await _context.SaveChangesAsync();
-
-            //return RedirectToPage("./Index");
         }
     }
 }
