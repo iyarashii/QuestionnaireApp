@@ -14,12 +14,14 @@ namespace QuestionnaireApp.Data
             : base(options)
         {
         }
+        // create database tables
         public DbSet<Group> Groups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
         public DbSet<Questionnaire> Questionnaires { get; set; }
         public DbSet<QuestionnaireGroup> QuestionnaireGroups { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
+        public DbSet<UserAnswer> UserAnswers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,11 +31,15 @@ namespace QuestionnaireApp.Data
             // TODO: tried to make group name unique with this line of code but it does not work, idk why
             //modelBuilder.Entity<Group>().HasIndex(g => g.Name).IsUnique(true);
 
+            // create composite primary keys for joined tables
             modelBuilder.Entity<UserGroup>()
                 .HasKey(u => new { u.UserID, u.GroupID });
 
             modelBuilder.Entity<QuestionnaireGroup>()
                 .HasKey(q => new { q.QuestionnaireID, q.GroupID });
+
+            modelBuilder.Entity<UserAnswer>()
+                .HasKey(ua => new { ua.UserID, ua.AnswerID });
         }
     }
 }

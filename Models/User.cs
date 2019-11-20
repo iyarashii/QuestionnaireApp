@@ -30,5 +30,8 @@ namespace QuestionnaireApp.Models
 
         // list of the groups that this user is a part of
         public IList<UserGroup> UserGroups { get; set; }
+
+        // list of the answers that this user gave
+        public IList<UserAnswer> UserAnswers { get; set; }
     }
 }

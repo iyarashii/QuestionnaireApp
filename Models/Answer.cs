@@ -15,5 +15,6 @@ namespace QuestionnaireApp.Models
         public int ID { get; set; }
         public int QuestionID { get; set; }
         public Question Question { get; set; }
+        public IList<UserAnswer> AnswerUsers { get; set; }
     }
 }
