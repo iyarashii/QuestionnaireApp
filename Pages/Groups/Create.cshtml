@@ -18,8 +18,8 @@
                 <input asp-for="Group.Name" class="form-control" />
                 <span asp-validation-for="Group.Name" class="text-danger"></span>
             </div>
-            <h4>Select users for this group:</h4>
             <div class="form-group">
+                <label asp-for="Group.UserGroups" class="control-label"></label>
                 <div class="table">
                     <table>
                         <tr>
@@ -42,9 +42,10 @@
                                 }
                             @:</tr>
                             }
-                        </table>
-                    </div>
+                    </table>
                 </div>
+                <span asp-validation-for="Group.UserGroups" class="text-danger"></span>
+            </div>
                 <div class="form-group">
                     <input type="submit" value="Create" class="btn btn-primary" />
                 </div>

@@ -17,10 +17,11 @@ namespace QuestionnaireApp.Models
 
         // ostateczny termin wypelnienia
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = false)]
         [Display(Name = "Due Date")]
         public DateTime DueDate { get; set; }
 
+        [Display(Name = "Recipients")]
         public IList<QuestionnaireGroup> Targets { get; set; }
 
         public IList<Question> Questions { get; set; }

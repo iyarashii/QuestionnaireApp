@@ -11,7 +11,7 @@ using QuestionnaireApp.Models;
 
 namespace QuestionnaireApp.Pages.Questionnaires
 {
-    public class EditModel : PageModel
+    public class EditModel : QuestionnairesPageModel
     {
         private readonly QuestionnaireApp.Data.ApplicationDbContext _context;
 
@@ -22,7 +22,7 @@ namespace QuestionnaireApp.Pages.Questionnaires
 
         [BindProperty]
         public Questionnaire Questionnaire { get; set; }
-
+        
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -30,48 +30,57 @@ namespace QuestionnaireApp.Pages.Questionnaires
                 return NotFound();
             }
 
-            Questionnaire = await _context.Questionnaires.FirstOrDefaultAsync(m => m.ID == id);
+            Questionnaire = await _context.Questionnaires
+                .Include(q => q.Targets)
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(q => q.ID == id);
 
             if (Questionnaire == null)
             {
                 return NotFound();
             }
+
+            PopulateAssignedQuestionnaireGroupData(_context, Questionnaire);
+
             return Page();
         }
 
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id, string[] selectedGroups)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            _context.Attach(Questionnaire).State = EntityState.Modified;
+            var questionnaireToUpdate = await _context.Questionnaires
+                .Include(q => q.Targets)
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.ID == id);
 
-            try
+            if (questionnaireToUpdate == null)
             {
+                return NotFound();
+            }
+
+            if (await TryUpdateModelAsync<Questionnaire>(
+                questionnaireToUpdate,
+                "Questionnaire",
+                q => q.Title, q => q.Description,
+                q => q.DueDate, q => q.Targets,
+                q => q.Questions))
+            {
+                UpdateQuestionnaireTargets(_context, selectedGroups, questionnaireToUpdate);
                 await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!QuestionnaireExists(Questionnaire.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return RedirectToPage("./Index");
-        }
-
-        private bool QuestionnaireExists(int id)
-        {
-            return _context.Questionnaires.Any(e => e.ID == id);
+            UpdateQuestionnaireTargets(_context, selectedGroups, questionnaireToUpdate);
+            PopulateAssignedQuestionnaireGroupData(_context, questionnaireToUpdate);
+            return Page();
         }
     }
 }

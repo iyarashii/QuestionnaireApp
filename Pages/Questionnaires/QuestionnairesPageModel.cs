@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using QuestionnaireApp.Data;
 using QuestionnaireApp.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace QuestionnaireApp.Pages.Questionnaires
 {
@@ -40,6 +41,46 @@ namespace QuestionnaireApp.Pages.Questionnaires
                     Name = group.Name,
                     Assigned = questionnaireTargets.Contains(group.ID)
                 });
+            }
+        }
+
+        public void UpdateQuestionnaireTargets(ApplicationDbContext context,
+           string[] selectedGroups, Questionnaire questionnaireToUpdate)
+        {
+            if (selectedGroups == null)
+            {
+                questionnaireToUpdate.Targets = new List<QuestionnaireGroup>();
+                return;
+            }
+
+            var selectedGroupsHS = new HashSet<string>(selectedGroups);
+            var questionnaireTargets = new HashSet<int>
+                (questionnaireToUpdate.Targets.Select(q => q.GroupID));
+            foreach (var group in context.Groups)
+            {
+                if (selectedGroupsHS.Contains(group.ID.ToString()))
+                {
+                    if (!questionnaireTargets.Contains(group.ID))
+                    {
+                        questionnaireToUpdate.Targets.Add(
+                            new QuestionnaireGroup
+                            {
+                                QuestionnaireID = questionnaireToUpdate.ID,
+                                GroupID = group.ID
+                            });
+                    }
+                }
+                else
+                {
+                    if (questionnaireTargets.Contains(group.ID))
+                    {
+                        QuestionnaireGroup groupToRemove
+                            = questionnaireToUpdate
+                                .Targets
+                                .SingleOrDefault(g => g.GroupID == group.ID);
+                        context.Remove(groupToRemove);
+                    }
+                }
             }
         }
     }

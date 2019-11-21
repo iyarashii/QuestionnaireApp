@@ -28,8 +28,8 @@
                 <input asp-for="Questionnaire.DueDate" class="form-control" />
                 <span asp-validation-for="Questionnaire.DueDate" class="text-danger"></span>
             </div>
-            <h4>Select targeted groups for this questionnaire:</h4>
             <div class="form-group">
+                <label asp-for="Questionnaire.Targets" class="control-label"></label>
                 <div class="table">
                     <table>
                         <tr>
@@ -54,7 +54,8 @@
                             }
                         </table>
                     </div>
-                </div>
+                <span asp-validation-for="Questionnaire.Targets" class="text-danger"></span>
+             </div>
                 <div class="form-group">
                     <label asp-for="Questionnaire.Questions[0].Content" class="control-label"></label> 1
                     <input asp-for="Questionnaire.Questions[0].Content" class="form-control" />

@@ -33,7 +33,7 @@ namespace QuestionnaireApp.Pages.Groups
             Group = await _context.Groups
                 .Include(g => g.UserGroups)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(g => g.ID == id);
 
             if (Group == null)
             {

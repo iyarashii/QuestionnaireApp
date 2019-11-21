@@ -10,6 +10,5 @@ namespace QuestionnaireApp
     {
         public static readonly Claim IsAdminClaim = new Claim("IsAdmin", bool.TrueString);
         public static readonly Claim IsNotAdminClaim = new Claim("IsAdmin", bool.FalseString);
-        //public static int NumberOfQuestions;
     }
 }

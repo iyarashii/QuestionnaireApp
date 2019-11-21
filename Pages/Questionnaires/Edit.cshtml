@@ -1,5 +1,6 @@
 ﻿@page
 @model QuestionnaireApp.Pages.Questionnaires.EditModel
+@using QuestionnaireApp.Models;
 
 @{
     ViewData["Title"] = "Edit";
@@ -29,17 +30,72 @@
                 <input asp-for="Questionnaire.DueDate" class="form-control" />
                 <span asp-validation-for="Questionnaire.DueDate" class="text-danger"></span>
             </div>
+            @*group selection display*@
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+                <label asp-for="Questionnaire.Targets" class="control-label"></label>
+                <div class="table">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+                                foreach (var group in Model.QuestionnaireAssignedGroupsDataList)
+                                {
+                                    if (cnt++ % 6 == 0)
+                                    {
+                                    @:</tr><tr>
+                                    }
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="selectedGroups"
+                                               value="@group.GroupID"
+                                               @(Html.Raw(group.Assigned ? "checked=\"checked\"" : "")) />
+                                        @group.Name
+                                    @:</td>
+                                }
+                            @:</tr>
+                            }
+                        </table>
+                    </div>
+                    <span asp-validation-for="Questionnaire.Targets" class="text-danger"></span>
+                </div>
+                @*question and answers edit fields*@
+            <div class="form-group">
+            @{
+                for (int q = 0; q < Model.Questionnaire.Questions.Count; q++)
+                {
+                    <div class="form-group">
+                        <label asp-for="Questionnaire.Questions[q].Content" class="control-label"></label><label>&nbsp;@(q+1)</label>
+                        <input asp-for="Questionnaire.Questions[q].Content" class="form-control" />
+                        <span asp-validation-for="Questionnaire.Questions[q].Content" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Question @(q+1) Type</label>
+                        <select asp-for="Questionnaire.Questions[q].QuestionType" class="form-control"
+                                asp-items="@Html.GetEnumSelectList<QuestionTypes>()"></select>
+                        <span asp-validation-for="Questionnaire.Questions[q].QuestionType" class="text-danger"></span>
+                    </div>
+                    for (int a = 0; a < Model.Questionnaire.Questions[q].Answers.Count; a++)
+                    {
+                        <div class="form-group">
+                            <label>Question @(q + 1)&nbsp;</label><label asp-for="Questionnaire.Questions[q].Answers[a].Content" class="control-label"></label><label>&nbsp;@(a+1)</label>
+                            <input asp-for="Questionnaire.Questions[q].Answers[a].Content" class="form-control" />
+                            <span asp-validation-for="Questionnaire.Questions[q].Answers[a].Content" class="text-danger"></span>
+                        </div>
+                    }
+                }
+            }
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-page="./Index">Back to List</a>
-</div>
+    <div>
+        <a asp-page="./Index">Back to List</a>
+    </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
