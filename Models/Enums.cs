@@ -22,7 +22,5 @@ namespace QuestionnaireApp.Models
         MultipleChoice,
         [Display(Name = "Single choice")]
         SingleChoice,
-        [Display(Name = "Drop-down")]
-        Dropdown
     };
 }

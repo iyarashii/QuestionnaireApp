@@ -1,0 +1,75 @@
+﻿@page
+@model QuestionnaireApp.Pages.Questionnaires.FillOutModel
+@using QuestionnaireApp.Models;
+
+@{
+    ViewData["Title"] = "Fill Out Questionnaire";
+}
+
+<h1>@Html.DisplayFor(model => model.Questionnaire.Title)</h1>
+<h4>@Html.DisplayFor(model => model.Questionnaire.Description)</h4>
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Questionnaire.ID" />
+            <div class="form-group">
+                @{
+                    for (int q = 0; q < Model.Questionnaire.Questions.Count; q++)
+                    {
+                        <label class="control-label">@Html.DisplayFor(model => model.Questionnaire.Questions[q].Content)</label>
+                        @*switch for different question display options*@
+                string displayType = "";
+                switch (Model.Questionnaire.Questions[q].QuestionType)
+                {
+                    case QuestionTypes.SingleChoice:
+                        displayType = "radio";
+                        break;
+                    case QuestionTypes.MultipleChoice:
+                        displayType = "checkbox";
+                        break;
+                }
+                //for (int a = 0; a < Model.Questionnaire.Questions[q].Answers.Count; a++)
+                //{
+                            <div class="table">
+                                <table>
+                                    <tr>
+                                        @{
+                                            int cnt = 0;
+                                            foreach (var answer in Model.SelectedAnswerDataList[q])
+                                            {
+                                                if (cnt++ % 6 == 0)
+                                                {
+                                                @:</tr><tr>
+                                                }
+                                                @:<td>
+                                                    <input type="@Html.Raw(displayType)" required
+                                                           name="selectedAnswers"
+                                                           value="@answer.AnswerID"
+                                                           @(Html.Raw(answer.Selected ? "checked=\"checked\"" : "")) />
+                                                    @answer.Content
+                                                @:</td>
+                                            }
+                                        @:</tr>
+                                        }
+                                    </table>
+                                </div>
+                            //}
+                    }
+                }
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save Answers" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+                }

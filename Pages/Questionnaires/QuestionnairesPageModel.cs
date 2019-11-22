@@ -9,12 +9,14 @@ using System.ComponentModel.DataAnnotations;
 using QuestionnaireApp.Data;
 using QuestionnaireApp.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 
 namespace QuestionnaireApp.Pages.Questionnaires
 {
     public class QuestionnairesPageModel : PageModel
     {
         public List<QuestionnaireAssignedGroupData> QuestionnaireAssignedGroupsDataList;
+        public List<List<SelectedAnswerData>> SelectedAnswerDataList = new List<List<SelectedAnswerData>>();
 
         public static List<int> NumberOfQuestions = new List<int> { 2 };
         public void AddQuestion()
@@ -41,6 +43,28 @@ namespace QuestionnaireApp.Pages.Questionnaires
                     Name = group.Name,
                     Assigned = questionnaireTargets.Contains(group.ID)
                 });
+            }
+        }
+
+        public async Task PopulateSelectedAnswerData(Questionnaire questionnaire, UserManager<User> userManager)
+        {
+            User user = await userManager.GetUserAsync(User);
+            for (int q = 0; q < questionnaire.Questions.Count; q++)
+            {
+                var questionAnswers = questionnaire.Questions[q].Answers;
+                SelectedAnswerDataList.Add(new List<SelectedAnswerData>());
+
+                for (int a = 0; a < questionnaire.Questions[q].Answers.Count; a++)
+                {
+                    var answerUsers = new HashSet<string>(
+                    questionnaire.Questions[q].Answers[a].AnswerUsers.Select(au => au.UserID));
+                    SelectedAnswerDataList[q].Add(new SelectedAnswerData
+                    {
+                        AnswerID = questionAnswers[a].ID,
+                        Content = questionAnswers[a].Content,
+                        Selected = answerUsers.Contains(user.Id)
+                    });
+                }
             }
         }
 
@@ -79,6 +103,58 @@ namespace QuestionnaireApp.Pages.Questionnaires
                                 .Targets
                                 .SingleOrDefault(g => g.GroupID == group.ID);
                         context.Remove(groupToRemove);
+                    }
+                }
+            }
+        }
+
+
+        public async Task UpdateUserAnswers(ApplicationDbContext context,
+           string[] selectedAnswers, Questionnaire questionnaireToUpdate, UserManager<User> userManager)
+        {
+            User user = await userManager.GetUserAsync(User);
+            if (selectedAnswers == null)
+            {
+                for (int q = 0; q < questionnaireToUpdate.Questions.Count; q++)
+                {
+                    for (int a = 0; a < questionnaireToUpdate.Questions[q].Answers.Count; a++)
+                    {
+                        questionnaireToUpdate.Questions[q].Answers[a].AnswerUsers = new List<UserAnswer>();
+                    }
+                }
+                return;
+            }
+
+            var selectedAnswersHS = new HashSet<string>(selectedAnswers);
+
+            for (int q = 0; q < questionnaireToUpdate.Questions.Count; q++)
+            {
+                for (int a = 0; a < questionnaireToUpdate.Questions[q].Answers.Count; a++)
+                {
+                    var answerUsers = new HashSet<string>(
+                    questionnaireToUpdate.Questions[q].Answers[a].AnswerUsers.Select(au => au.UserID));
+                    if (selectedAnswersHS.Contains(questionnaireToUpdate.Questions[q].Answers[a].ID.ToString()))
+                    {
+                        if (!answerUsers.Contains(user.Id))
+                        {
+                            questionnaireToUpdate.Questions[q].Answers[a].AnswerUsers.Add(
+                                new UserAnswer
+                                {
+                                    AnswerID = questionnaireToUpdate.Questions[q].Answers[a].ID,
+                                    UserID = user.Id
+                                });
+                        }
+                    }
+                    else
+                    {
+                        if (answerUsers.Contains(user.Id))
+                        {
+                            UserAnswer userAnswerToRemove
+                                = questionnaireToUpdate
+                                    .Questions[q].Answers[a].AnswerUsers
+                                    .SingleOrDefault(ua => ua.UserID == user.Id);
+                            context.Remove(userAnswerToRemove);
+                        }
                     }
                 }
             }

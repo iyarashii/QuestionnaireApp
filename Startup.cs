@@ -60,6 +60,17 @@ namespace QuestionnaireApp
             services.AddMvc()
                     .AddRazorPagesOptions(options =>
                         options.Conventions.AuthorizeFolder("/Groups/", "Admin"));
+
+            // prevent non-admin users from creating, deleting and editing questionnaires
+            services.AddMvc()
+                    .AddRazorPagesOptions(options =>
+                    options.Conventions.AuthorizePage("/Questionnaires/Create", "Admin"));
+            services.AddMvc()
+                    .AddRazorPagesOptions(options =>
+                    options.Conventions.AuthorizePage("/Questionnaires/Delete", "Admin"));
+            services.AddMvc()
+                    .AddRazorPagesOptions(options =>
+                    options.Conventions.AuthorizePage("/Questionnaires/Edit", "Admin"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -3,7 +3,7 @@
 @using QuestionnaireApp.Models;
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Questionnaire";
 }
 
 <h1>Edit</h1>
@@ -63,6 +63,7 @@
             @{
                 for (int q = 0; q < Model.Questionnaire.Questions.Count; q++)
                 {
+                    // question
                     <div class="form-group">
                         <label asp-for="Questionnaire.Questions[q].Content" class="control-label"></label><label>&nbsp;@(q+1)</label>
                         <input asp-for="Questionnaire.Questions[q].Content" class="form-control" />
@@ -76,15 +77,17 @@
                     </div>
                     for (int a = 0; a < Model.Questionnaire.Questions[q].Answers.Count; a++)
                     {
+                        // answer
                         <div class="form-group">
-                            <label>Question @(q + 1)&nbsp;</label><label asp-for="Questionnaire.Questions[q].Answers[a].Content" class="control-label"></label><label>&nbsp;@(a+1)</label>
+                            <label>Question @(q + 1)&nbsp;-&nbsp;</label><label asp-for="Questionnaire.Questions[q].Answers[a].Content"
+                                                                                class="control-label"></label><label>&nbsp;@(a+1)</label>
                             <input asp-for="Questionnaire.Questions[q].Answers[a].Content" class="form-control" />
                             <span asp-validation-for="Questionnaire.Questions[q].Answers[a].Content" class="text-danger"></span>
                         </div>
                     }
                 }
             }
-                </div>
+            </div>
                 <div class="form-group">
                     <input type="submit" value="Save" class="btn btn-primary" />
                 </div>

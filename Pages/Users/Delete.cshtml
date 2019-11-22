@@ -1,7 +1,7 @@
 ﻿@page
 @model QuestionnaireApp.Pages.Users.DeleteModel
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete User";
     bool isSelectedUserAnAdmin = !(Model.UserClaims.FirstOrDefault(m => m.UserId == Model.SelectedUser.Id) == null);
 }
 

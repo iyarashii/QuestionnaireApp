@@ -22,7 +22,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        @if (User.HasClaim("IsAdmin", bool.TrueString))
+                        @if (User.HasClaim(Constants.IsAdminClaim.Type, Constants.IsAdminClaim.Value))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Users/Index">Users</a>

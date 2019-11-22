@@ -2,7 +2,7 @@
 @model QuestionnaireApp.Pages.Users.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "User Details";
     bool isSelectedUserAnAdmin = !(Model.UserClaims.FirstOrDefault(m => m.UserId == Model.SelectedUser.Id) == null);
 }
 
