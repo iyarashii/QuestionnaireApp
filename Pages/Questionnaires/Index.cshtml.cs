@@ -19,12 +19,13 @@ namespace QuestionnaireApp.Pages.Questionnaires
             _context = context;
         }
 
-        public IList<Questionnaire> Questionnaire { get;set; }
+        public IList<Questionnaire> Questionnaires { get;set; }
 
         public async Task OnGetAsync()
         {
             NumberOfQuestions = new List<int> { 2 };
-            Questionnaire = await _context.Questionnaires.ToListAsync();
+            // TODO: add a way to hide fill out for users that filled out the questionnaire already
+            Questionnaires = await _context.Questionnaires.Include(q => q.Targets).ThenInclude(g => g.Group).ThenInclude(g => g.UserGroups).ToListAsync();
         }
     }
 }

@@ -30,32 +30,29 @@
                         displayType = "checkbox";
                         break;
                 }
-                //for (int a = 0; a < Model.Questionnaire.Questions[q].Answers.Count; a++)
-                //{
-                            <div class="table">
-                                <table>
-                                    <tr>
-                                        @{
-                                            int cnt = 0;
-                                            foreach (var answer in Model.SelectedAnswerDataList[q])
-                                            {
-                                                if (cnt++ % 6 == 0)
-                                                {
-                                                @:</tr><tr>
-                                                }
-                                                @:<td>
-                                                    <input type="@Html.Raw(displayType)" required
-                                                           name="selectedAnswers"
-                                                           value="@answer.AnswerID"
-                                                           @(Html.Raw(answer.Selected ? "checked=\"checked\"" : "")) />
-                                                    @answer.Content
-                                                @:</td>
-                                            }
-                                        @:</tr>
+                    <div class="table">
+                        <table>
+                            <tr>
+                                @{
+                                    int cnt = 0;
+                                    foreach (var answer in Model.SelectedAnswerDataList[q])
+                                    {
+                                        if (cnt++ % 6 == 0)
+                                        {
+                                        @:</tr><tr>
                                         }
-                                    </table>
-                                </div>
-                            //}
+                                        @:<td>
+                                            <input type="@Html.Raw(displayType)" required
+                                                    name="selectedAnswers"
+                                                    value="@answer.AnswerID"
+                                                    @(Html.Raw(answer.Selected ? "checked=\"checked\"" : "")) />
+                                            @answer.Content
+                                        @:</td>
+                                    }
+                                @:</tr>
+                                }
+                            </table>
+                    </div>
                     }
                 }
             </div>

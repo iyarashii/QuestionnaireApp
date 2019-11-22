@@ -1,8 +1,11 @@
 ﻿@page
 @model QuestionnaireApp.Pages.Questionnaires.IndexModel
+@using QuestionnaireApp.Models
+@inject UserManager<User> UserManager
 
 @{
     ViewData["Title"] = "Questionnaires";
+    User user = await UserManager.GetUserAsync(User);
 }
 
 <h1>Questionnaires</h1>
@@ -17,39 +20,54 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Questionnaire[0].Title)
+                @Html.DisplayNameFor(model => model.Questionnaires[0].Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Questionnaire[0].Description)
+                @Html.DisplayNameFor(model => model.Questionnaires[0].Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Questionnaire[0].DueDate)
+                @Html.DisplayNameFor(model => model.Questionnaires[0].DueDate)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Questionnaire) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DueDate)
-            </td>
-            <td>
-                <a asp-page="./FillOut" asp-route-id="@item.ID">Fill Out</a>
-                @if (User.HasClaim(Constants.IsAdminClaim.Type, Constants.IsAdminClaim.Value))
+        @{ foreach (var item in Model.Questionnaires)
+            {
+            
+                var targetedGroups = item.Targets;
+                if (targetedGroups.Any())
                 {
-                   @:|
-                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a>@: |
-                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                    foreach (var qgroup in targetedGroups)
+                    {
+                        if (qgroup.Group.UserGroups.Select(ug => ug.UserID).Contains(user.Id))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DueDate)
+                                </td>
+                                <td>
+                                @* TODO: add a way to hide fill out for users that filled out the questionnaire already *@    
+                                <a asp-page="./FillOut" asp-route-id="@item.ID">Fill Out</a>
+                                    @if (User.HasClaim(Constants.IsAdminClaim.Type, Constants.IsAdminClaim.Value))
+                                    {
+                                        @:|
+                                        <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a>@: |
+                                        <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                                    }
+                                </td>
+                            </tr>
+                            break;
+                        }
+                    }
                 }
-            </td>
-        </tr>
-}
+            }
+        }
     </tbody>
 </table>

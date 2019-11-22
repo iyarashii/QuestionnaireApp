@@ -32,6 +32,31 @@ namespace QuestionnaireApp.Pages.Questionnaires
                 return NotFound();
             }
 
+
+            // TODO: do something to prevent access by not targeted users from url
+            // my hacky solution
+            #region myhackysolution
+            bool isUserAllowed = false;
+            User user = await _userManager.GetUserAsync(User);
+            var targets = await _context.Questionnaires
+                .Include(q => q.Targets)
+                    .ThenInclude(g => g.Group)
+                        .ThenInclude(g => g.UserGroups)
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(q => q.ID == id);
+            foreach (var qgroup in targets.Targets)
+            {
+                if (qgroup.Group.UserGroups.Select(ug => ug.UserID).Contains(user.Id))
+                {
+                    isUserAllowed = true;
+                }
+            }
+            if (!isUserAllowed)
+            {
+               return RedirectToPage("/Error");
+            }
+            #endregion
+
             Questionnaire = await _context.Questionnaires
                 .Include(q => q.Questions)
                     .ThenInclude(q => q.Answers)
