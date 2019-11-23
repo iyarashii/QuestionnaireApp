@@ -61,6 +61,7 @@ namespace QuestionnaireApp.Pages.Questionnaires
                     SelectedAnswerDataList[q].Add(new SelectedAnswerData
                     {
                         AnswerID = questionAnswers[a].ID,
+                        Number = questionAnswers[a].Number,
                         Content = questionAnswers[a].Content,
                         Selected = answerUsers.Contains(user.Id)
                     });

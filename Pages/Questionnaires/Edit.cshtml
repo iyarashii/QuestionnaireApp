@@ -61,12 +61,14 @@
                 @*question and answers edit fields*@
             <div class="form-group">
             @{
+                Model.Questionnaire.Questions = Model.Questionnaire.Questions.OrderBy(q => q.Number).ToList();
                 for (int q = 0; q < Model.Questionnaire.Questions.Count; q++)
                 {
                     // question
                     <div class="form-group">
                         <label asp-for="Questionnaire.Questions[q].Content" class="control-label"></label><label>&nbsp;@(q+1)</label>
                         <input asp-for="Questionnaire.Questions[q].Content" class="form-control" />
+                        <input type="hidden" asp-for="Questionnaire.Questions[q].Number" value="@(q+1)" />
                         <span asp-validation-for="Questionnaire.Questions[q].Content" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -75,6 +77,7 @@
                                 asp-items="@Html.GetEnumSelectList<QuestionTypes>()"></select>
                         <span asp-validation-for="Questionnaire.Questions[q].QuestionType" class="text-danger"></span>
                     </div>
+                    Model.Questionnaire.Questions[q].Answers = Model.Questionnaire.Questions[q].Answers.OrderBy(a => a.Number).ToList();
                     for (int a = 0; a < Model.Questionnaire.Questions[q].Answers.Count; a++)
                     {
                         // answer
@@ -82,6 +85,7 @@
                             <label>Question @(q + 1)&nbsp;-&nbsp;</label><label asp-for="Questionnaire.Questions[q].Answers[a].Content"
                                                                                 class="control-label"></label><label>&nbsp;@(a+1)</label>
                             <input asp-for="Questionnaire.Questions[q].Answers[a].Content" class="form-control" />
+                            <input asp-for="Questionnaire.Questions[q].Answers[a].Number" type="hidden" value="@(a+1)" />
                             <span asp-validation-for="Questionnaire.Questions[q].Answers[a].Content" class="text-danger"></span>
                         </div>
                     }

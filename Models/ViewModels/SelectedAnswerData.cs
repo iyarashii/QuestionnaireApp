@@ -8,6 +8,7 @@ namespace QuestionnaireApp.Models.ViewModels
     public class SelectedAnswerData
     {
         public int AnswerID { get; set; }
+        public int Number { get; set; }
         public string Content { get; set; }
         public bool Selected { get; set; }
     }

@@ -22,5 +22,7 @@ namespace QuestionnaireApp.Models
         [Display(Name = "Question Type")]
         public QuestionTypes QuestionType { get; set; }
         public IList<Answer> Answers { get; set; }
+
+        public int Number { get; set; }
     }
 }

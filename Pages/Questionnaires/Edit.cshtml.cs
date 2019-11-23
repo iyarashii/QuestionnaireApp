@@ -41,7 +41,7 @@ namespace QuestionnaireApp.Pages.Questionnaires
             {
                 return NotFound();
             }
-
+            
             PopulateAssignedQuestionnaireGroupData(_context, Questionnaire);
 
             return Page();

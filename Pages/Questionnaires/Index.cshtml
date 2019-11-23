@@ -34,9 +34,28 @@
     <tbody>
         @{ foreach (var item in Model.Questionnaires)
             {
-            
+
                 var targetedGroups = item.Targets;
-                if (targetedGroups.Any())
+                if(User.HasClaim(Constants.IsAdminClaim.Type, Constants.IsAdminClaim.Value))
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DueDate)
+                    </td>
+                    <td>
+                        <a asp-page="./FillOut" asp-route-id="@item.ID">Fill Out</a> |
+                        <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+                }
+                else if (targetedGroups.Any())
                 {
                     foreach (var qgroup in targetedGroups)
                     {
@@ -55,12 +74,6 @@
                                 <td>
                                 @* TODO: add a way to hide fill out for users that filled out the questionnaire already *@    
                                 <a asp-page="./FillOut" asp-route-id="@item.ID">Fill Out</a>
-                                    @if (User.HasClaim(Constants.IsAdminClaim.Type, Constants.IsAdminClaim.Value))
-                                    {
-                                        @:|
-                                        <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a>@: |
-                                        <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-                                    }
                                 </td>
                             </tr>
                             break;

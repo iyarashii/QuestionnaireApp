@@ -20,33 +20,38 @@
                     {
                         <label class="control-label">@Html.DisplayFor(model => model.Questionnaire.Questions[q].Content)</label>
                         @*switch for different question display options*@
-                string displayType = "";
-                switch (Model.Questionnaire.Questions[q].QuestionType)
-                {
-                    case QuestionTypes.SingleChoice:
-                        displayType = "radio";
-                        break;
-                    case QuestionTypes.MultipleChoice:
-                        displayType = "checkbox";
-                        break;
-                }
+                        string displayType = "";
+                        switch (Model.Questionnaire.Questions[q].QuestionType)
+                        {
+                            case QuestionTypes.SingleChoice:
+                                displayType = "radio";
+                                break;
+                            case QuestionTypes.MultipleChoice:
+                                displayType = "checkbox";
+                                break;
+                        }
                     <div class="table">
                         <table>
                             <tr>
                                 @{
                                     int cnt = 0;
+                                    Model.SelectedAnswerDataList[q] = Model.SelectedAnswerDataList[q].OrderBy(q => q.Number).ToList();
                                     foreach (var answer in Model.SelectedAnswerDataList[q])
                                     {
-                                        if (cnt++ % 6 == 0)
+                                        if (cnt++ % 15 == 0)
                                         {
                                         @:</tr><tr>
                                         }
                                         @:<td>
-                                            <input type="@Html.Raw(displayType)" required
-                                                    name="selectedAnswers"
-                                                    value="@answer.AnswerID"
-                                                    @(Html.Raw(answer.Selected ? "checked=\"checked\"" : "")) />
-                                            @answer.Content
+                                            //<div class="@Html.Raw(displayType)">
+                                               //<label>
+                                                    <input type="@Html.Raw(displayType)"
+                                                           name="selectedAnswers"
+                                                           value="@answer.AnswerID"
+                                                           @(Html.Raw(answer.Selected ? "checked=\"checked\"" : "")) />
+                                                    @answer.Content
+                                                //</label>
+                                            //</div>
                                         @:</td>
                                     }
                                 @:</tr>
