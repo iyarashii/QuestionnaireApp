@@ -1,0 +1,60 @@
+﻿@page
+@model QuestionnaireApp.Pages.Questionnaires.ResultsModel
+
+@{
+    ViewData["Title"] = "Results";
+}
+
+<h1>Results</h1>
+
+<div>
+    <h4>Questionnaire</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Questionnaire.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Questionnaire.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Questionnaire.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Questionnaire.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Questionnaire.DueDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Questionnaire.DueDate)
+        </dd>
+        @{
+            for (int q = 0; q < Model.Questionnaire.Questions.Count; q++)
+            {
+                Model.Questionnaire.Questions[q].Answers = Model.Questionnaire.Questions[q].Answers.OrderBy(q => q.Number).ToList();
+                <dt class="col-sm-2">
+                    <label class="control-label">@Html.DisplayNameFor(model => model.Questionnaire.Questions[q].Content) @Html.DisplayFor(model => model.Questionnaire.Questions[q].Number)</label>
+                </dt>
+                <dd class="col-sm-10">
+                    @foreach (var answer in Model.Questionnaire.Questions[q].Answers)
+                    {
+                        double targetedUsersCount = Model.TargetedUsersIDs.Count();
+                        double userAnswersCount = Model.UserAnswers.Where(ua => ua.AnswerID == answer.ID).Count();
+                        double answerPercentage = userAnswersCount / targetedUsersCount * 100;
+                        string answerPercentageString = $"{answerPercentage:0.00}%";
+                        @Html.DisplayFor(model => answer.Content)@:
+                        @:-- @answerPercentageString (@Model.UserAnswers.Where(ua => ua.AnswerID == answer.ID).Count()/@Model.TargetedUsersIDs.Count())
+                        <br />
+                    }
+                </dd>
+            }
+        }
+    </dl>
+</div>
+
+        
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Questionnaire.ID">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
