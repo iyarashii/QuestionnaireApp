@@ -79,12 +79,22 @@ namespace QuestionnaireApp.Pages.Questionnaires
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id, string[] selectedAnswers)
+        public async Task<IActionResult> OnPostAsync(int? id, List<string> selectedAnswers, string r0, string r1, string r2, string r3, string r4, string r5, string r6, string r7, string r8, string r9)
         {
             if (id == null)
             {
                 return NotFound();
             }
+            selectedAnswers.Add(r0);
+            selectedAnswers.Add(r1);
+            selectedAnswers.Add(r2);
+            selectedAnswers.Add(r3);
+            selectedAnswers.Add(r4);
+            selectedAnswers.Add(r5);
+            selectedAnswers.Add(r6);
+            selectedAnswers.Add(r7);
+            selectedAnswers.Add(r8);
+            selectedAnswers.Add(r9);
 
             var questionnaireToUpdate = await _context.Questionnaires
                 .Include(q => q.Questions)

@@ -111,7 +111,7 @@ namespace QuestionnaireApp.Pages.Questionnaires
 
 
         public async Task UpdateUserAnswers(ApplicationDbContext context,
-           string[] selectedAnswers, Questionnaire questionnaireToUpdate, UserManager<User> userManager)
+           List<string> selectedAnswers, Questionnaire questionnaireToUpdate, UserManager<User> userManager)
         {
             User user = await userManager.GetUserAsync(User);
             if (selectedAnswers == null)

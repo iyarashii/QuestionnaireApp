@@ -16,6 +16,7 @@
             <input type="hidden" asp-for="Questionnaire.ID" />
             <div class="form-group">
                 @{
+                    int selectedAnswersIndex = -1;
                     for (int q = 0; q < Model.Questionnaire.Questions.Count; q++)
                     {
                         <label class="control-label">@Html.DisplayFor(model => model.Questionnaire.Questions[q].Content)</label>
@@ -25,6 +26,7 @@
                         {
                             case QuestionTypes.SingleChoice:
                                 displayType = "radio";
+                                selectedAnswersIndex++;
                                 break;
                             case QuestionTypes.MultipleChoice:
                                 displayType = "checkbox";
@@ -43,15 +45,22 @@
                                         @:</tr><tr>
                                         }
                                         @:<td>
-                                            //<div class="@Html.Raw(displayType)">
-                                               //<label>
-                                                    <input type="@Html.Raw(displayType)"
-                                                           name="selectedAnswers"
-                                                           value="@answer.AnswerID"
-                                                           @(Html.Raw(answer.Selected ? "checked=\"checked\"" : "")) />
-                                                    @answer.Content
-                                        //</label>
-                                        //</div>
+                                               if(displayType == "radio")
+                                        {
+                                            <input type="@Html.Raw(displayType)" name="@($"r{selectedAnswersIndex}")"
+                                                        value="@answer.AnswerID"
+                                                        @(Html.Raw(answer.Selected ? "checked=\"checked\"" : "")) />
+                                            @*@Html.RadioButtonFor(b => answer, answer.AnswerID);*@
+                                        }
+                                        else
+                                        {
+                                            <input type="@Html.Raw(displayType)"
+                                                        name="selectedAnswers"
+                                                        value="@answer.AnswerID"
+                                                        @(Html.Raw(answer.Selected ? "checked=\"checked\"" : "")) />
+                                        }
+                                                
+                                                @answer.Content
                                         @:</td>
                                     }
                                 @:</tr>
