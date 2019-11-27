@@ -67,6 +67,22 @@ namespace QuestionnaireApp.Pages.Questionnaires
                 return NotFound();
             }
 
+            // remove useranswers for answers from questionnaire that is edited
+            var questionnaireUserAnswerIDsList = await _context.UserAnswers.ToListAsync();
+            foreach (var q in Questionnaire.Questions)
+            {
+                foreach (var a in q.Answers)
+                {
+                    foreach(var ua in questionnaireUserAnswerIDsList)
+                    {
+                        if (ua.AnswerID == a.ID)
+                        {
+                            _context.Remove(ua);
+                        }
+                    }
+                }
+            }
+
             if (await TryUpdateModelAsync<Questionnaire>(
                 questionnaireToUpdate,
                 "Questionnaire",
