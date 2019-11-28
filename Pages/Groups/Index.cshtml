@@ -10,52 +10,91 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+
+<form asp-page="./Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name:
+            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-page="./Index">Back to full List</a>
+        </p>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Group[0].Name)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
+                   asp-route-currentFilter="@Model.CurrentFilter">
+                    @Html.DisplayNameFor(model => model.Groups[0].Name)
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Group[0].UserGroups)
+                @Html.DisplayNameFor(model => model.Groups[0].UserGroups)
                 <br />
                 Last Name | First Name | Email
             </th>
             <th>
-                Member Count
+                <a asp-page="./Index" asp-route-sortOrder="@Model.MemberCountSort"
+                   asp-route-currentFilter="@Model.CurrentFilter">
+                    Member Count
+                </a>
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Group) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @{
-                    foreach (var user in item.UserGroups)
-                    {
-                        var userData = Model.AssignedUserDataList
-                            .Where(u => u.UserID == user.UserID)
-                            .FirstOrDefault();
-                        if (userData != null)
+        @foreach (var item in Model.Groups)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @{
+                        foreach (var user in item.UserGroups)
                         {
-                            @: @userData.LastName | @userData.FirstName | @userData.Email <br />
+                            var userData = Model.AssignedUserDataList
+                                .Where(u => u.UserID == user.UserID)
+                                .FirstOrDefault();
+                            if (userData != null)
+                            {
+                                @: @userData.LastName | @userData.FirstName | @userData.Email <br />
+                            }
                         }
                     }
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserGroups.Count)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserGroups.Count)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.Groups.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Groups.HasNextPage ? "disabled" : "";
+}
+
+<a asp-page="./Index"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageIndex="@(Model.Groups.PageIndex - 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
+   class="btn btn-primary @prevDisabled">
+    Previous
+</a>
+<a asp-page="./Index"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageIndex="@(Model.Groups.PageIndex + 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
+   class="btn btn-primary @nextDisabled">
+    Next
+</a>
