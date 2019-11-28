@@ -19,13 +19,64 @@ namespace QuestionnaireApp.Pages.Questionnaires
             _context = context;
         }
 
-        public IList<Questionnaire> Questionnaires { get;set; }
+        public PaginatedList<Questionnaire> Questionnaires { get;set; }
+        public string TitleSort { get; set; }
+        public string DueDateSort { get; set; }
+        public string CurrentFilter { get; set; }
+        public string CurrentSort { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string sortOrder,
+            string currentFilter, string searchString, int? pageIndex)
         {
+            // reset number of questions after questionnaire creation
             NumberOfQuestions = new List<int> { 2 };
-            // TODO: add a way to hide fill out for users that filled out the questionnaire already
-            Questionnaires = await _context.Questionnaires.Include(q => q.Targets).ThenInclude(g => g.Group).ThenInclude(g => g.UserGroups).ToListAsync();
+
+            // sorting and searching logic
+            CurrentSort = sortOrder;
+            TitleSort = String.IsNullOrEmpty(sortOrder) ? "Title_desc" : "";
+            DueDateSort = sortOrder == "DueDate" ? "DueDate_desc" : "DueDate";
+            if (searchString != null)
+            {
+                pageIndex = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            CurrentFilter = searchString;
+
+            IQueryable<Questionnaire> questionnairesIQ = from all in _context.Questionnaires select all;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                questionnairesIQ = questionnairesIQ.Where(s => s.Title.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "Title_desc":
+                    questionnairesIQ = questionnairesIQ.OrderByDescending(s => s.Title);
+                    break;
+                case "DueDate":
+                    questionnairesIQ = questionnairesIQ.OrderBy(s => s.DueDate);
+                    break;
+                case "DueDate_desc":
+                    questionnairesIQ = questionnairesIQ.OrderByDescending(s => s.DueDate);
+                    break;
+                default:
+                    questionnairesIQ = questionnairesIQ.OrderBy(s => s.Title);
+                    break;
+            }
+            int pageSize = 15;
+            if(User.HasClaim(Constants.IsAdminClaim.Type, Constants.IsAdminClaim.Value))
+            {
+                pageSize = 6;
+            }
+            Questionnaires = await PaginatedList<Questionnaire>.CreateAsync(
+                questionnairesIQ
+                .Include(q => q.Targets)
+                    .ThenInclude(g => g.Group)
+                        .ThenInclude(g => g.UserGroups)
+                        .AsNoTracking(), pageIndex ?? 1, pageSize);
         }
     }
 }

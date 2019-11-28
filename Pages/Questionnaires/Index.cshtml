@@ -16,17 +16,35 @@
         <a asp-page="Create">Create New</a>
     }
 </p>
+
+<form asp-page="./Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by title:
+            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-page="./Index">Back to full List</a>
+        </p>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Questionnaires[0].Title)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.TitleSort"
+                   asp-route-currentFilter="@Model.CurrentFilter">
+                    @Html.DisplayNameFor(model => model.Questionnaires[0].Title)
+                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Questionnaires[0].Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Questionnaires[0].DueDate)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.DueDateSort"
+                   asp-route-currentFilter="@Model.CurrentFilter">
+                    @Html.DisplayNameFor(model => model.Questionnaires[0].DueDate)
+                </a>
             </th>
             <th></th>
         </tr>
@@ -36,25 +54,25 @@
             {
 
                 var targetedGroups = item.Targets;
-                if(User.HasClaim(Constants.IsAdminClaim.Type, Constants.IsAdminClaim.Value))
+                if (User.HasClaim(Constants.IsAdminClaim.Type, Constants.IsAdminClaim.Value))
                 {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DueDate)
-                    </td>
-                    <td>
-                        <a asp-page="./FillOut" asp-route-id="@item.ID">Fill Out</a> |
-                        <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                        <a asp-page="./Results" asp-route-id="@item.ID">Results</a> |
-                        <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DueDate)
+                        </td>
+                        <td>
+                            <a asp-page="./FillOut" asp-route-id="@item.ID">Fill Out</a> |
+                            <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                            <a asp-page="./Results" asp-route-id="@item.ID">Results</a> |
+                            <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                        </td>
+                    </tr>
                 }
                 else if (targetedGroups.Any())
                 {
@@ -91,3 +109,23 @@
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.Questionnaires.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Questionnaires.HasNextPage ? "disabled" : "";
+}
+
+<a asp-page="./Index"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageIndex="@(Model.Questionnaires.PageIndex - 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
+   class="btn btn-primary @prevDisabled">
+    Previous
+</a>
+<a asp-page="./Index"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageIndex="@(Model.Questionnaires.PageIndex + 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
+   class="btn btn-primary @nextDisabled">
+    Next
+</a>
