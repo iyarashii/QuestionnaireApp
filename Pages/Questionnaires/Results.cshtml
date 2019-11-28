@@ -1,8 +1,11 @@
 ﻿@page
 @model QuestionnaireApp.Pages.Questionnaires.ResultsModel
+@using QuestionnaireApp.Models
+@inject UserManager<User> UserManager
 
 @{
     ViewData["Title"] = "Results";
+    User user = await UserManager.GetUserAsync(User);
 }
 
 <h1>Results</h1>
@@ -53,8 +56,11 @@
     </dl>
 </div>
 
-        
+
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.Questionnaire.ID">Edit</a> |
+    @if (User.HasClaim(Constants.IsAdminClaim.Type, Constants.IsAdminClaim.Value))
+    {
+        <a asp-page="./Edit" asp-route-id="@Model.Questionnaire.ID">Edit</a>@: |
+    }
     <a asp-page="./Index">Back to List</a>
 </div>

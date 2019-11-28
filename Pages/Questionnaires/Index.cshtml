@@ -73,8 +73,14 @@
                                     @Html.DisplayFor(modelItem => item.DueDate)
                                 </td>
                                 <td>
-                                @* TODO: add a way to hide fill out for users that filled out the questionnaire already *@    
-                                <a asp-page="./FillOut" asp-route-id="@item.ID">Fill Out</a>
+                                    @if (item.DueDate < DateTime.Now.Date)
+                                    {
+                                        <a asp-page="./Results" asp-route-id="@item.ID">Results</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="./FillOut" asp-route-id="@item.ID">Fill Out</a>
+                                    }
                                 </td>
                             </tr>
                             break;
