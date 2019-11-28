@@ -138,7 +138,7 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account
                         });
                     await _context.SaveChangesAsync();
 
-                    // TODO: grant user admin rights if his mail is - admin@admin.com
+                    // grant user admin rights if his mail is - admin@admin.com
                     await _userManager.AddClaimAsync(user,
                          new Claim("IsAdmin",
                              (user.Email == "admin@admin.com").ToString()));

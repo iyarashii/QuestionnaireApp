@@ -33,7 +33,7 @@ namespace QuestionnaireApp.Pages.Questionnaires
             }
 
 
-            // TODO: do something to prevent access by not targeted users from url
+            // do something to prevent access by not targeted users from url
             // my hacky solution
             if(!User.HasClaim(Constants.IsAdminClaim.Type, Constants.IsAdminClaim.Value))
             {

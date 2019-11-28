@@ -90,7 +90,6 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    // TODO: maybe modify this to go somewhere else idk
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

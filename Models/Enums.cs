@@ -14,7 +14,6 @@ namespace QuestionnaireApp.Models
         Other
     };
 
-    // TODO: wzorowane na google forms https://imgur.com/a/ship2mF
     public enum QuestionTypes
     {
         //WrittenAnswer,
