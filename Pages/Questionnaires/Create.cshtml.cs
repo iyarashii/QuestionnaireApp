@@ -24,14 +24,14 @@ namespace QuestionnaireApp.Pages.Questionnaires
             var questionnaire = new Questionnaire();
             questionnaire.Targets = new List<QuestionnaireGroup>();
 
-            if (questions != null && questions == NumberOfQuestions.Count)
-            {
-                AddQuestion();
-            }
-            if (answers != null)
-            {
-                AddAnswer(answers ?? 0);
-            }
+            //if (questions != null && questions == NumberOfQuestions.Count)
+            //{
+            //    AddQuestion();
+            //}
+            //if (answers != null)
+            //{
+            //    AddAnswer(answers ?? 0);
+            //}
 
             PopulateAssignedQuestionnaireGroupData(_context, questionnaire);
 
