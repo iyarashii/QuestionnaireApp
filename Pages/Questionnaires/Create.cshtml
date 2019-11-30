@@ -91,6 +91,7 @@
             <script>
                 // JS script for answers generation
                 var answersArray = [];
+                // amount of questions that you can add
                 for (var y = 0; y < 100; y++) {
                     answersArray[y] = 2;
                 }
@@ -180,7 +181,7 @@
                         qTypeSelect.options.add(option0);
                         qTypeSelect.options.add(option1);
                         qTypeDiv.appendChild(qTypeSelect);
-                        qTypeDiv.insertAdjacentHTML('beforeend', String.raw`<span class="text-danger field-validation-valid" data-valmsg-for="Questionnaire.Questions[${q}].QuestionType" data-valmsg-replace="true"></span><br/>`);
+                        qTypeDiv.insertAdjacentHTML('beforeend', String.raw`<span class="text-danger field-validation-valid" data-valmsg-for="Questionnaire.Questions[${q}].QuestionType" data-valmsg-replace="true"></span>`);
 
                         // ans 1 div
                         var ans1Div = document.createElement("div");
@@ -193,8 +194,8 @@
                         questionsContainer.appendChild(ans1Div);
                         // label
                         ans1Label.textContent = `Question ${q+1} - Answer 1`;
-                        questionsContainer.appendChild(ans1Label);
-                        questionsContainer.appendChild(document.createElement("br"));
+                        ans1Div.appendChild(ans1Label);
+                        ans1Div.appendChild(document.createElement("br"));
                         // input content and number
                         ans1Input.type = "text";
                         ans1Input.className += "form-control";
@@ -205,9 +206,9 @@
                         ans1InputNumber.value = 1;
                         ans1InputNumber.id = `Questionnaire_Questions_${q}__Answers_0__Number`;
                         ans1InputNumber.name = `Questionnaire.Questions[${q}].Answers[0].Number`;
-                        questionsContainer.appendChild(ans1Input);
-                        questionsContainer.appendChild(ans1InputNumber);
-                        questionsContainer.insertAdjacentHTML('beforeend', String.raw`<span class="text-danger field-validation-valid" data-valmsg-for="Questionnaire.Questions[${q}].Answers[0].Content" data-valmsg-replace="true"></span><br/>`);
+                        ans1Div.appendChild(ans1Input);
+                        ans1Div.appendChild(ans1InputNumber);
+                        ans1Div.insertAdjacentHTML('beforeend', String.raw`<span class="text-danger field-validation-valid" data-valmsg-for="Questionnaire.Questions[${q}].Answers[0].Content" data-valmsg-replace="true"></span>`);
 
                         // ans 2 div
                         var ans2Div = document.createElement("div");
@@ -220,8 +221,8 @@
                         questionsContainer.appendChild(ans2Div);
                         //label
                         ans2Label.textContent = `Question ${q+1} - Answer 2`;
-                        questionsContainer.appendChild(ans2Label);
-                        questionsContainer.appendChild(document.createElement("br"));
+                        ans2Div.appendChild(ans2Label);
+                        ans2Div.appendChild(document.createElement("br"));
                         // input content and number
                         ans2Input.type = "text";
                         ans2Input.className += "form-control";
@@ -232,9 +233,9 @@
                         ans2InputNumber.value = 2;
                         ans2InputNumber.id = `Questionnaire_Questions_${q}__Answers_1__Number`;
                         ans2InputNumber.name = `Questionnaire.Questions[${q}].Answers[1].Number`;
-                        questionsContainer.appendChild(ans2Input);
-                        questionsContainer.appendChild(ans2InputNumber);
-                        questionsContainer.insertAdjacentHTML('beforeend', String.raw`<span class="text-danger field-validation-valid" data-valmsg-for="Questionnaire.Questions[${q}].Answers[1].Content" data-valmsg-replace="true"></span><br/>`);
+                        ans2Div.appendChild(ans2Input);
+                        ans2Div.appendChild(ans2InputNumber);
+                        ans2Div.insertAdjacentHTML('beforeend', String.raw`<span class="text-danger field-validation-valid" data-valmsg-for="Questionnaire.Questions[${q}].Answers[1].Content" data-valmsg-replace="true"></span>`);
 
                         // rest of the answers div
                         var xAnswersDiv = document.createElement("div");
@@ -265,6 +266,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
 
 }
