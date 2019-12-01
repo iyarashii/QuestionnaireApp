@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using QuestionnaireApp.Data;
 using QuestionnaireApp.Models;
+using QuestionnaireApp.Services;
+using SelectPdf;
 
 namespace QuestionnaireApp.Pages.Questionnaires
 {
     public class ResultsModel : PageModel
     {
         private readonly QuestionnaireApp.Data.ApplicationDbContext _context;
+        private ViewToStringRendererService _viewToStringRenderer;
 
         public ResultsModel(QuestionnaireApp.Data.ApplicationDbContext context)
         {
@@ -66,5 +67,18 @@ namespace QuestionnaireApp.Pages.Questionnaires
 
             return Page();
         }
+
+        public async void OnPostAsync()
+        {
+            // Tutaj to trzeba wywołać, chyba ma tu być url i viewmodel do tego
+            var html = await _viewToStringRenderer.RenderViewToStringAsync("/Questionnaires/Results/", null);
+            SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+            SelectPdf.PdfDocument doc = converter.ConvertHtmlString(html);
+            doc.Save("raport.pdf");
+            doc.Close();
+        }
+
     }
+
+    
 }
