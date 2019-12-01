@@ -67,7 +67,7 @@
                             @Html.DisplayFor(modelItem => item.DueDate)
                         </td>
                         <td>
-                            <a asp-page="./FillOut" asp-route-id="@item.ID">Fill Out</a> |
+                            @*<a asp-page="./FillOut" asp-route-id="@item.ID">Fill Out</a> |*@
                             <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
                             <a asp-page="./Results" asp-route-id="@item.ID">Results</a> |
                             <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
