@@ -35,8 +35,7 @@
         @{
             try
             {
-                for (int q = 0; q < Model.Questionnaire.Questions.Count; q++)
-            {
+<<<<<<< HEAD
                 Model.Questionnaire.Questions[q].Answers = Model.Questionnaire.Questions[q].Answers.OrderBy(q => q.Number).ToList();
                 <dt class="col-sm-2">
                     <label class="control-label">@Html.DisplayNameFor(model => model.Questionnaire.Questions[q].Content) @Html.DisplayFor(model => model.Questionnaire.Questions[q].Number)</label>
@@ -55,8 +54,32 @@
                         <br />
                     }
                 </dd>
+=======
+                for (int q = 0; q < Model.Questionnaire.Questions.Count; q++)
+                {
+                    Model.Questionnaire.Questions[q].Answers = Model.Questionnaire.Questions[q].Answers.OrderBy(q => q.Number).ToList();
+                    <dt class="col-sm-2">
+                        <label class="control-label">@Html.DisplayNameFor(model => model.Questionnaire.Questions[q].Content) @Html.DisplayFor(model => model.Questionnaire.Questions[q].Number)</label>
+                    </dt>
+                    <dd class="col-sm-10">
+                        @foreach (var answer in Model.Questionnaire.Questions[q].Answers)
+                        {
+                            double targetedUsersCount = Model.TargetedUsersIDs.Count();
+                            double userAnswersCount = Model.UserAnswers.Where(ua => ua.AnswerID == answer.ID).Count();
+                            double answerPercentage = userAnswersCount / targetedUsersCount * 100;
+                            string answerPercentageString = $"{answerPercentage:0.00}%";
+                            @Html.DisplayFor(model => answer.Content)@:
+                            @:-- @answerPercentageString (@Model.UserAnswers.Where(ua => ua.AnswerID == answer.ID).Count()/@Model.TargetedUsersIDs.Count())
+                            <br />
+                        }
+                    </dd>
                 }
-            } catch { }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+>>>>>>> b8cb2ca... Rendering result PDF.
+            }
         }
     </dl>
 </div>
