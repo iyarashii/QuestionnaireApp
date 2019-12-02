@@ -18,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QuestionnaireApp.Data;
 using QuestionnaireApp.Models;
+using QuestionnaireApp.Services;
 
 namespace QuestionnaireApp.Areas.Identity.Pages.Account
 {
@@ -27,14 +28,14 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly IMailSender _emailSender;
         private readonly ApplicationDbContext _context;
 
         public RegisterModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender,
+            IMailSender emailSender,
             ApplicationDbContext context)
         {
             _userManager = userManager;
@@ -150,9 +151,13 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account
                         pageHandler: null,
                         values: new { area = "Identity", userId = user.Id, code = code },
                         protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    var message = new Message
+                    {
+                        Subject = "Confirm your email",
+                        Body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
+                        To = new string[] { Input.Email }
+                    };
+                    await _emailSender.Send(message);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

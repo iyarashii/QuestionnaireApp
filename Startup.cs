@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using QuestionnaireApp.Models;
+using QuestionnaireApp.Services;
 
 namespace QuestionnaireApp
 {
@@ -71,6 +72,7 @@ namespace QuestionnaireApp
             services.AddMvc()
                     .AddRazorPagesOptions(options =>
                     options.Conventions.AuthorizePage("/Questionnaires/Edit", "Admin"));
+            services.AddTransient<IMailSender, SmtpMailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
