@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using QuestionnaireApp.Models;
+using QuestionnaireApp.Services;
 
 namespace QuestionnaireApp.Areas.Identity.Pages.Account
 {
@@ -21,12 +22,12 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<LoginModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly IMailSender _emailSender;
 
         public LoginModel(SignInManager<User> signInManager, 
             ILogger<LoginModel> logger,
             UserManager<User> userManager,
-            IEmailSender emailSender)
+            IMailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -132,10 +133,13 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account
                 pageHandler: null,
                 values: new { userId = userId, code = code },
                 protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
-                Input.Email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            var message = new Message
+            {
+                Subject = "Confirm your email",
+                Body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
+                To = new string[] { Input.Email }
+            };
+            await _emailSender.Send(message);
 
             ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             return Page();
