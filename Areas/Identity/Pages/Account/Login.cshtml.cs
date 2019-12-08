@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using QuestionnaireApp.Models;
 using QuestionnaireApp.Services;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
 
 namespace QuestionnaireApp.Areas.Identity.Pages.Account
 {
@@ -128,10 +130,11 @@ namespace QuestionnaireApp.Areas.Identity.Pages.Account
 
             var userId = await _userManager.GetUserIdAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
-                values: new { userId = userId, code = code },
+                values: new { area = "Identity", userId = userId, code = code },
                 protocol: Request.Scheme);
             var message = new Message
             {

@@ -5,10 +5,6 @@
     <UserSecretsId>aspnet-QuestionnaireApp-A6719695-0CA3-4F22-ABFB-88F660A2D1F2</UserSecretsId>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="ScaffoldingReadme.txt" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.0.0" />
