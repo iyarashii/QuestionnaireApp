@@ -12,9 +12,9 @@ Users can only fill out and check the results of Questionnaires that are address
 3. Identity account manage page:
 ![account manage image](https://i.imgur.com/dVL8okQ.png)
 4. Users page (admin only):
-![users page image](https://i.imgur.com/S0Rxfim.png)
+![users page image](https://i.imgur.com/VWiSjDQ.png)
 5. Groups page (admin only):
-![groups image](https://i.imgur.com/rITodxj.png)
+![groups image](https://i.imgur.com/iHyXShu.png)
 6. Questionnaires page (admin view):  
 ![Questionnaires page image](https://i.imgur.com/Cl52D7e.png)
 7. Questionnaires page (user view):
