@@ -1,4 +1,5 @@
-# QuestionnaireApp
+# QuestionnaireApp  
+![Questionnaires page image](https://i.imgur.com/Cl52D7e.png)
 ASP.NET Core Web App created with Razor Pages, EF Core and Identity framework. 
 It lets you create questionnaires for groups of registered users.  
 Admins can: manage users, create and manage user groups, create and manage Questionnaires 
